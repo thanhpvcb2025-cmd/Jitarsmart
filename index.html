@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanhbcwed — Công nghệ chính hãng</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">⚡</span>
+        <span>Jitarsmart
+        </span>
+      </a>
+      <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav" id="main-nav">
+        <a href="index.html" class="nav__link">Trang chủ</a>
+        <a href="#products" class="nav__link">Sản phẩm</a>
+        <a href="#" class="nav__link">Khuyến mãi</a>
+        <a href="#footer" class="nav__link">Liên hệ</a>
+      </nav>
+      <!-- Search bar -->
+      <div id="search-wrap">
+        <div class="search-bar">
+          <span class="search-bar__icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+          <button class="search-bar__clear" id="search-clear" onclick="document.getElementById('search-input').value=''; document.getElementById('search-dropdown').style.display='none';">✕</button>
+        </div>
+        <div id="search-dropdown"></div>
+      </div>
+
+      <div class="header__actions">
+        <button id="dark-mode-btn" class="dark-mode-btn" onclick="toggleDarkMode()" title="Chuyển sang chế độ tối">🌙</button>
+        <button id="auth-btn" onclick="openAuthModal('login')">
+          <span>👤</span> Đăng nhập
+        </button>
+        <!-- User menu (khi đã đăng nhập) -->
+        <div id="user-menu">
+          <button class="user-avatar-btn" onclick="toggleUserDropdown()">
+            <div class="user-avatar" id="user-avatar-letter">U</div>
+            <span id="user-name">User</span>
+            <span>▾</span>
+          </button>
+          <div id="user-dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-header__name" id="dropdown-fullname"></div>
+              <div class="dropdown-header__email" id="dropdown-email"></div>
+            </div>
+            <a href="cart.html" class="dropdown-item">
+              <span class="dropdown-item__icon">🛒</span> Giỏ hàng
+            </a>
+            <a href="cart.html?tab=orders" class="dropdown-item">
+              <span class="dropdown-item__icon">📋</span> Lịch sử đơn hàng
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item dropdown-item--danger" onclick="logout()">
+              <span class="dropdown-item__icon">🚪</span> Đăng xuất
+            </button>
+          </div>
+        </div>
+        <!-- <a href="cart.html?tab=wishlist" class="wishlist-btn">
+          <span>❤️</span>
+          <span>Yêu thích</span>
+          <span id="wishlist-badge"></span>
+        </a> -->
+        <a href="cart.html" class="cart-btn">
+          <span class="cart-btn__icon">🛒</span>
+          <span>Giỏ hàng</span>
+          <span id="cart-badge"></span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── BANNER ─────────────────────────────────────────── -->
+  <section class="banner">
+    <div class="container banner__inner">
+      <div class="banner__content">
+        <span class="banner__tag">🔥 Ưu đãi hôm nay</span>
+        <h1 class="banner__title">
+          Công nghệ <span>đỉnh cao</span><br>Giá tốt nhất
+        </h1>
+        <p class="banner__desc">
+          Điện thoại, Laptop, PC chính hãng — bảo hành đầy đủ,
+          giao hàng toàn quốc, hỗ trợ 24/7.
+        </p>
+        <div class="banner__actions">
+          <a href="#products" class="btn btn--accent">Mua ngay</a>
+          <a href="#products" class="btn btn--outline">Xem tất cả</a>
+        </div>
+      </div>
+      <div class="banner__img-wrap">
+        <img id="banner-img"
+             src=""
+             alt=""
+             class="banner__img"
+             onerror="this.style.opacity='0'">
+        <!-- Dots indicator -->
+        <div class="banner__dots" id="banner-dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MAIN ───────────────────────────────────────────── -->
+  <main class="container" style="padding-top: 8px; padding-bottom: 48px;">
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat__num">10+</div>
+        <div class="stat__label">Sản phẩm</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num">100%</div>
+        <div class="stat__label">Chính hãng</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num">24/7</div>
+        <div class="stat__label">Hỗ trợ</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num">Miễn phí</div>
+        <div class="stat__label">Giao hàng</div>
+      </div>
+    </div>
+
+    <!-- Products section -->
+    <section class="section" id="products">
+      <div class="section__header">
+        <h2 class="section__title">Sản phẩm nổi bật</h2>
+        <div class="filter">
+          <button class="filter__tab filter__tab--active" data-category="all">Tất cả</button>
+          <button class="filter__tab" data-category="dienthoai">📱 Điện thoại</button>
+          <button class="filter__tab" data-category="laptop">💻 Laptop</button>
+          <button class="filter__tab" data-category="pc">🖥️ PC</button>
+          <button class="filter__tab" data-category="phukien">🎧 Phụ kiện</button>
+        </div>
+      </div>
+      <div id="product-grid"></div>
+      <!-- Phân trang -->
+      <div class="pagination" id="pagination"></div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────── -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <div class="logo">
+            <span class="logo__icon">⚡</span>
+            <span>Thanhbcwed</span>
+          </div>
+          <p>Chuyên cung cấp thiết bị công nghệ chính hãng với giá tốt nhất thị trường.</p>
+        </div>
+        <div>
+          <h4 class="footer__title">Danh mục</h4>
+          <ul class="footer__links">
+            <li><a href="#">📱 Điện thoại</a></li>
+            <li><a href="#">💻 Laptop</a></li>
+            <li><a href="#">🖥️ PC & iMac</a></li>
+            <li><a href="#">🎧 Phụ kiện</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__title">Hỗ trợ</h4>
+          <ul class="footer__links">
+            <li><a href="#">Chính sách bảo hành</a></li>
+            <li><a href="#">Chính sách đổi trả</a></li>
+            <li><a href="#">Hướng dẫn mua hàng</a></li>
+            <li><a href="#">Liên hệ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer__title">Liên hệ</h4>
+          <ul class="footer__links">
+            <li><a href="#">📞 0337 635 962</a></li>
+            <li><a href="#">✉️ thanhbc@gmail.com</a></li>
+            <li><a href="#">📍 TP. Hà Nội</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© 8/5/2026 Thanhbcwed. All rights reserved.</p>
+        <a href="admin.html" style="font-size:0.75rem; color:#555; margin-top:6px; display:inline-block;">🔧 Quản trị</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── AUTH MODAL ────────────────────────────────────── -->
+  <div id="auth-modal">
+    <div class="auth-modal">
+      <div class="auth-modal__header">
+        <div class="auth-modal__logo">⚡ Jitarsmart</div>
+        <div class="auth-modal__subtitle">Đăng nhập để mua sắm dễ dàng hơn</div>
+        <button class="auth-modal__close" onclick="closeAuthModal()">✕</button>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab__btn auth-tab__btn--active" data-tab="login" onclick="switchAuthTab('login')">Đăng nhập</button>
+        <button class="auth-tab__btn" data-tab="register" onclick="switchAuthTab('register')">Tạo tài khoản</button>
+      </div>
+
+      <!-- Panel đăng nhập -->
+      <div class="auth-panel auth-panel--active" id="panel-login">
+        <form id="login-form">
+          <div class="auth-form-group">
+            <label for="login-email">Email</label>
+            <input class="auth-input" type="email" id="login-email" placeholder="example@email.com" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="login-password">Mật khẩu</label>
+            <div class="input-wrap">
+              <input class="auth-input" type="password" id="login-password" placeholder="Nhập mật khẩu" required>
+              <button type="button" class="toggle-pw" onclick="togglePassword('login-password', this)">👁</button>
+            </div>
+          </div>
+          <span class="auth-error" id="login-error"></span>
+          <button type="submit" class="auth-submit">Đăng nhập</button>
+        </form>
+        <p class="auth-switch">Chưa có tài khoản? <a onclick="switchAuthTab('register')">Đăng ký ngay</a></p>
+      </div>
+
+      <!-- Panel đăng ký -->
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="auth-form-group">
+            <label for="reg-fullname">Họ và tên</label>
+            <input class="auth-input" type="text" id="reg-fullname" placeholder="Nguyễn Văn A" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="reg-email">Email</label>
+            <input class="auth-input" type="email" id="reg-email" placeholder="example@email.com" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="reg-phone">Số điện thoại</label>
+            <input class="auth-input" type="tel" id="reg-phone" placeholder="0909 xxx xxx" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="reg-password">Mật khẩu</label>
+            <div class="input-wrap">
+              <input class="auth-input" type="password" id="reg-password" placeholder="Ít nhất 6 ký tự" required>
+              <button type="button" class="toggle-pw" onclick="togglePassword('reg-password', this)">👁</button>
+            </div>
+          </div>
+          <div class="auth-form-group">
+            <label for="reg-password2">Xác nhận mật khẩu</label>
+            <div class="input-wrap">
+              <input class="auth-input" type="password" id="reg-password2" placeholder="Nhập lại mật khẩu" required>
+              <button type="button" class="toggle-pw" onclick="togglePassword('reg-password2', this)">👁</button>
+            </div>
+          </div>
+          <span class="auth-error" id="reg-error"></span>
+          <button type="submit" class="auth-submit">Tạo tài khoản</button>
+        </form>
+        <p class="auth-switch">Đã có tài khoản? <a onclick="switchAuthTab('login')">Đăng nhập</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCRIPTS ────────────────────────────────────────── -->
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/compare.js"></script>
+  <script src="js/darkmode.js"></script>
+  <script src="js/home.js"></script>
+
+</body>
+</html>

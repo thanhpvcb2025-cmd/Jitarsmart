@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Quản lý đơn hàng | Thanhbcwed</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- ── SIDEBAR ────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <span>⚡</span>
+      <span>Thanhbcwed</span>
+      <span class="sidebar__badge">Admin</span>
+    </div>
+
+    <nav class="sidebar__nav">
+      <a href="#" class="sidebar__link sidebar__link--active" data-section="orders">
+        <span class="sidebar__icon">📋</span>
+        <span>Đơn hàng</span>
+        <span class="sidebar__count" id="nav-order-count">0</span>
+      </a>
+      <a href="#" class="sidebar__link" data-section="products">
+        <span class="sidebar__icon">📦</span>
+        <span>Sản phẩm</span>
+        <span class="sidebar__count" id="nav-product-count">0</span>
+      </a>
+      <a href="#" class="sidebar__link" data-section="users">
+        <span class="sidebar__icon">👥</span>
+        <span>Tài khoản</span>
+        <span class="sidebar__count" id="nav-user-count">0</span>
+      </a>
+      <a href="#" class="sidebar__link" data-section="stats">
+        <span class="sidebar__icon">📊</span>
+        <span>Thống kê</span>
+      </a>
+    </nav>
+
+    <div class="sidebar__footer">
+      <a href="index.html" class="sidebar__link">
+        <span class="sidebar__icon">🏠</span>
+        <span>Về trang chủ</span>
+      </a>
+      <button class="sidebar__link sidebar__link--danger" onclick="adminLogout()">
+        <span class="sidebar__icon">🚪</span>
+        <span>Đăng xuất</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ───────────────────────────────────────────── -->
+  <div class="admin-main">
+
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <button class="topbar__menu-btn" onclick="toggleSidebar()">☰</button>
+      <h1 class="topbar__title" id="topbar-title">Quản lý đơn hàng</h1>
+      <div class="topbar__admin">
+        <span class="topbar__avatar">A</span>
+        <span id="topbar-admin-name">Admin</span>
+      </div>
+    </header>
+
+    <!-- ── SECTION: ĐƠN HÀNG ──────────────────────────── -->
+    <section class="admin-section" id="section-orders">
+
+      <!-- Stats cards -->
+      <div class="stats-grid">
+        <div class="stat-card stat-card--blue">
+          <div class="stat-card__icon">📋</div>
+          <div class="stat-card__info">
+            <div class="stat-card__num" id="stat-total">0</div>
+            <div class="stat-card__label">Tổng đơn hàng</div>
+          </div>
+        </div>
+        <div class="stat-card stat-card--yellow">
+          <div class="stat-card__icon">⏳</div>
+          <div class="stat-card__info">
+            <div class="stat-card__num" id="stat-pending">0</div>
+            <div class="stat-card__label">Chờ xác nhận</div>
+          </div>
+        </div>
+        <div class="stat-card stat-card--green">
+          <div class="stat-card__icon">✅</div>
+          <div class="stat-card__info">
+            <div class="stat-card__num" id="stat-done">0</div>
+            <div class="stat-card__label">Đã giao</div>
+          </div>
+        </div>
+        <div class="stat-card stat-card--orange">
+          <div class="stat-card__icon">💰</div>
+          <div class="stat-card__info">
+            <div class="stat-card__num" id="stat-revenue">0đ</div>
+            <div class="stat-card__label">Doanh thu</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Search -->
+      <div class="admin-toolbar">
+        <div class="admin-search">
+          <span>🔍</span>
+          <input type="text" id="order-search" placeholder="Tìm mã đơn, tên, SĐT..." oninput="filterOrders()">
+        </div>
+        <div class="admin-filters">
+          <select id="order-status-filter" onchange="filterOrders()">
+            <option value="">Tất cả trạng thái</option>
+            <option value="Chờ xác nhận">Chờ xác nhận</option>
+            <option value="Đang xử lý">Đang xử lý</option>
+            <option value="Đang giao">Đang giao</option>
+            <option value="Đã giao">Đã giao</option>
+            <option value="Đã hủy">Đã hủy</option>
+          </select>
+          <select id="order-sort" onchange="filterOrders()">
+            <option value="newest">Mới nhất</option>
+            <option value="oldest">Cũ nhất</option>
+            <option value="highest">Giá trị cao nhất</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Orders table -->
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="orders-table">
+          <thead>
+            <tr>
+              <th>Mã đơn</th>
+              <th>Khách hàng</th>
+              <th>Sản phẩm</th>
+              <th>Tổng tiền</th>
+              <th>Ngày đặt</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+        <div id="orders-empty-msg" class="admin-empty" style="display:none;">
+          <span>📭</span>
+          <p>Không có đơn hàng nào</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SECTION: SẢN PHẨM ─────────────────────────── -->
+    <section class="admin-section" id="section-products" style="display:none;">
+
+      <!-- Stats sản phẩm -->
+      <div class="stats-grid" style="margin-bottom:20px;">
+        <div class="stat-card stat-card--blue">
+          <div class="stat-card__icon">📦</div>
+          <div class="stat-card__info">
+            <div class="stat-card__num" id="pstat-total">0</div>
+            <div class="stat-card__label">Tổng sản phẩm</div>
+          </div>
+        </div>
+        <div class="stat-card stat-card--green">
+          <div class="stat-card__icon">✅</div>
+          <div class="stat-card__info">
+            <div class="stat-card__num" id="pstat-instock">0</div>
+            <div class="stat-card__label">Còn hàng</div>
+          </div>
+        </div>
+        <div class="stat-card stat-card--yellow">
+          <div class="stat-card__icon">⚠️</div>
+          <div class="stat-card__info">
+            <div class="stat-card__num" id="pstat-outstock">0</div>
+            <div class="stat-card__label">Hết hàng</div>
+          </div>
+        </div>
+        <div class="stat-card stat-card--orange">
+          <div class="stat-card__icon">🏷️</div>
+          <div class="stat-card__info">
+            <div class="stat-card__num" id="pstat-categories">0</div>
+            <div class="stat-card__label">Danh mục</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="admin-toolbar">
+        <div class="admin-search">
+          <span>🔍</span>
+          <input type="text" id="product-search" placeholder="Tìm tên sản phẩm..." oninput="filterAdminProducts()">
+        </div>
+        <div class="admin-filters">
+          <select id="product-category-filter" onchange="filterAdminProducts()">
+            <option value="">Tất cả danh mục</option>
+            <option value="dienthoai">📱 Điện thoại</option>
+            <option value="laptop">💻 Laptop</option>
+            <option value="pc">🖥️ PC</option>
+            <option value="phukien">🎧 Phụ kiện</option>
+          </select>
+          <select id="product-stock-filter" onchange="filterAdminProducts()">
+            <option value="">Tất cả trạng thái</option>
+            <option value="instock">Còn hàng</option>
+            <option value="outstock">Hết hàng</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Products table -->
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width:60px">Ảnh</th>
+              <th>Tên sản phẩm</th>
+              <th>Danh mục</th>
+              <th>Giá bán</th>
+              <th>Giá gốc</th>
+              <th>Trạng thái</th>
+              <th style="width:100px">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody"></tbody>
+        </table>
+        <div id="products-empty-msg" class="admin-empty" style="display:none;">
+          <span>📦</span>
+          <p>Không tìm thấy sản phẩm nào</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SECTION: TÀI KHOẢN ─────────────────────────── -->
+    <section class="admin-section" id="section-users" style="display:none;">
+      <div class="admin-toolbar">
+        <div class="admin-search">
+          <span>🔍</span>
+          <input type="text" id="user-search" placeholder="Tìm tên, email, SĐT..." oninput="filterUsers()">
+        </div>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Họ tên</th>
+              <th>Email</th>
+              <th>Số điện thoại</th>
+              <th>Ngày đăng ký</th>
+              <th>Số đơn hàng</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+        <div id="users-empty-msg" class="admin-empty" style="display:none;">
+          <span>👥</span>
+          <p>Chưa có tài khoản nào</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SECTION: THỐNG KÊ ──────────────────────────── -->
+    <section class="admin-section" id="section-stats" style="display:none;">
+      <div class="stats-detail-grid" id="stats-detail"></div>
+    </section>
+
+  </div>
+
+  <!-- ── MODAL CHỈNH SỬA SẢN PHẨM ─────────────────────── -->
+  <div id="product-edit-modal" class="admin-modal-overlay">
+    <div class="admin-modal">
+      <div class="admin-modal__header">
+        <h3 id="product-modal-title">✏️ Chỉnh sửa sản phẩm</h3>
+        <button onclick="closeProductModal()">✕</button>
+      </div>
+      <div class="admin-modal__body" style="padding:20px;">
+
+        <!-- Thông tin cơ bản (chỉ đọc) -->
+        <div class="product-edit-preview">
+          <img id="pedit-img" src="" alt="" class="product-edit-preview__img"
+               onerror="this.src='assets/images/placeholder.jpg'">
+          <div>
+            <p class="product-edit-preview__name" id="pedit-name"></p>
+            <p class="product-edit-preview__cat" id="pedit-cat"></p>
+          </div>
+        </div>
+
+        <!-- Form chỉnh sửa -->
+        <div class="product-edit-form">
+          <div class="pedit-row">
+            <div class="pedit-group">
+              <label>Giá bán (VNĐ) *</label>
+              <input type="number" id="pedit-price" min="0" step="1000" placeholder="34990000">
+              <span class="pedit-preview" id="pedit-price-preview"></span>
+            </div>
+            <div class="pedit-group">
+              <label>Giá gốc (VNĐ) *</label>
+              <input type="number" id="pedit-original-price" min="0" step="1000" placeholder="37990000">
+              <span class="pedit-preview" id="pedit-original-preview"></span>
+            </div>
+          </div>
+
+          <div class="pedit-row">
+            <div class="pedit-group">
+              <label>Trạng thái kho</label>
+              <select id="pedit-instock">
+                <option value="true">✅ Còn hàng</option>
+                <option value="false">❌ Hết hàng</option>
+              </select>
+            </div>
+            <div class="pedit-group">
+              <label>Badge</label>
+              <select id="pedit-badge">
+                <option value="">Không có</option>
+                <option value="Hot">🔥 Hot</option>
+                <option value="New">🆕 New</option>
+                <option value="Sale">💸 Sale</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tính toán tự động -->
+          <div class="pedit-calc" id="pedit-calc">
+            <span>📊 Giảm: <strong id="pedit-discount-pct">0%</strong></span>
+            <span>💰 Tiết kiệm: <strong id="pedit-saving">0đ</strong></span>
+          </div>
+
+          <div class="pedit-group" style="margin-top:12px;">
+            <label>Ghi chú nội bộ (tùy chọn)</label>
+            <textarea id="pedit-note" rows="2" placeholder="Ghi chú cho admin..."></textarea>
+          </div>
+
+          <!-- Thông tin gốc & nút khôi phục -->
+          <div id="pedit-restore-section" class="pedit-restore-section" style="display:none;">
+            <div class="pedit-restore-header">
+              <span>↩️ Thông tin gốc ban đầu</span>
+            </div>
+            <div id="pedit-original-info" class="pedit-original-info"></div>
+            <button class="btn btn--restore" onclick="restoreProductEdit()">
+              ↩️ Khôi phục về mặc định
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="admin-modal__footer">
+        <div style="font-size:0.8rem; color:#888;">
+          ID: <span id="pedit-id"></span>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn--outline" onclick="closeProductModal()">Hủy</button>
+          <button class="btn btn--primary" onclick="saveProductEdit()">💾 Lưu thay đổi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL CHI TIẾT ĐƠN HÀNG ───────────────────────── -->
+  <div id="order-detail-modal" class="admin-modal-overlay">
+    <div class="admin-modal">
+      <div class="admin-modal__header">
+        <h3 id="modal-order-id">Chi tiết đơn hàng</h3>
+        <button onclick="closeOrderModal()">✕</button>
+      </div>
+      <div class="admin-modal__body" id="modal-body"></div>
+      <div class="admin-modal__footer">
+        <div class="modal-status-wrap">
+          <label>Cập nhật trạng thái:</label>
+          <select id="modal-status-select">
+            <option value="Chờ xác nhận">Chờ xác nhận</option>
+            <option value="Đang xử lý">Đang xử lý</option>
+            <option value="Đang giao">Đang giao</option>
+            <option value="Đã giao">Đã giao</option>
+            <option value="Đã hủy">Đã hủy</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn--outline" onclick="closeOrderModal()">Đóng</button>
+          <button class="btn btn--primary" onclick="saveOrderStatus()">💾 Lưu trạng thái</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LOGIN OVERLAY ──────────────────────────────────── -->
+  <div id="admin-login-overlay" class="admin-login-overlay">
+    <div class="admin-login-box">
+      <div class="admin-login-logo">⚡ Thanhbcwed</div>
+      <h2 class="admin-login-title">Đăng nhập Admin</h2>
+      <form id="admin-login-form" onsubmit="adminLogin(event)">
+        <div class="auth-form-group" style="margin-bottom:14px;">
+          <label style="display:block; font-weight:600; margin-bottom:6px; font-size:0.88rem;">Tên đăng nhập</label>
+          <input type="text" id="admin-username" class="auth-input" placeholder="admin" required>
+        </div>
+        <div class="auth-form-group" style="margin-bottom:14px;">
+          <label style="display:block; font-weight:600; margin-bottom:6px; font-size:0.88rem;">Mật khẩu</label>
+          <input type="password" id="admin-password" class="auth-input" placeholder="••••••" required>
+        </div>
+        <span class="auth-error" id="admin-login-error" style="display:block; margin-bottom:10px;"></span>
+        <button type="submit" class="auth-submit">Đăng nhập</button>
+      </form>
+      <p style="text-align:center; margin-top:14px; font-size:0.8rem; color:#888;">
+        Tài khoản mặc định: <strong>admin</strong> / <strong>admin123</strong>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/darkmode.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

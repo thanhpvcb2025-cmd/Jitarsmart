@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ hàng — Thanhbcwed</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">
+        <span class="logo__icon">⚡</span>
+        <span>Jitarsmart</span>
+      </a>
+      <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav" id="main-nav">
+        <a href="index.html" class="nav__link">Trang chủ</a>
+        <a href="index.html#products" class="nav__link">Sản phẩm</a>
+        <a href="#" class="nav__link">Khuyến mãi</a>
+        <a href="index.html#footer" class="nav__link">Liên hệ</a>
+      </nav>
+      <!-- Search bar -->
+      <div id="search-wrap">
+        <div class="search-bar">
+          <span class="search-bar__icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+          <button class="search-bar__clear" id="search-clear" onclick="document.getElementById('search-input').value=''; document.getElementById('search-dropdown').style.display='none';">✕</button>
+        </div>
+        <div id="search-dropdown"></div>
+      </div>
+
+      <div class="header__actions">
+        <button id="dark-mode-btn" class="dark-mode-btn" onclick="toggleDarkMode()" title="Chuyển sang chế độ tối">🌙</button>
+        <button id="auth-btn" onclick="openAuthModal('login')">
+          <span>👤</span> Đăng nhập
+        </button>
+        <div id="user-menu">
+          <button class="user-avatar-btn" onclick="toggleUserDropdown()">
+            <div class="user-avatar" id="user-avatar-letter">U</div>
+            <span id="user-name">User</span>
+            <span>▾</span>
+          </button>
+          <div id="user-dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-header__name" id="dropdown-fullname"></div>
+              <div class="dropdown-header__email" id="dropdown-email"></div>
+            </div>
+            <a href="cart.html" class="dropdown-item">
+              <span class="dropdown-item__icon">🛒</span> Giỏ hàng
+            </a>
+            <a href="cart.html?tab=orders" class="dropdown-item">
+              <span class="dropdown-item__icon">📋</span> Lịch sử đơn hàng
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item dropdown-item--danger" onclick="logout()">
+              <span class="dropdown-item__icon">🚪</span> Đăng xuất
+            </button>
+          </div>
+        </div>
+        <!-- <a href="cart.html?tab=wishlist" class="wishlist-btn">
+          <span>❤️</span>
+          <span>Yêu thích</span>
+          <span id="wishlist-badge"></span>
+        </a> -->
+        <a href="cart.html" class="cart-btn">
+          <span class="cart-btn__icon">🛒</span>
+          <span>Giỏ hàng</span>
+          <span id="cart-badge"></span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── MAIN ───────────────────────────────────────────── -->
+  <main class="container cart-page">
+    <h1 class="cart-page__title">🛒 Giỏ hàng của bạn</h1>
+
+    <!-- Tabs: Giỏ hàng / Lịch sử đơn hàng / Yêu thích -->
+    <div class="cart-tabs">
+      <button class="cart-tab__btn cart-tab__btn--active" data-tab="cart" onclick="switchCartTab('cart')">
+        🛒 Giỏ hàng
+      </button>
+      <button class="cart-tab__btn" data-tab="orders" onclick="switchCartTab('orders')">
+        📋 Lịch sử đơn hàng
+      </button>
+      <button class="cart-tab__btn" data-tab="wishlist" onclick="switchCartTab('wishlist')">
+        ❤️ Yêu thích
+      </button>
+    </div>
+
+    <!-- ── TAB GIỎ HÀNG ─────────────────────────────────── -->
+    <div id="tab-cart">
+      <!-- Empty state -->
+      <div id="cart-empty">
+        <div class="cart-empty__icon">🛒</div>
+        <p class="cart-empty__text">Giỏ hàng của bạn đang trống</p>
+        <a href="index.html" class="btn btn--primary">Tiếp tục mua sắm</a>
+      </div>
+
+      <!-- Cart content -->
+      <div id="cart-content">
+        <!-- Items -->
+        <div class="cart-items-wrap">
+          <div class="cart-items-header">
+            <span></span>
+            <span>Sản phẩm</span>
+            <span style="text-align:center">Số lượng</span>
+            <span style="text-align:right">Thành tiền</span>
+            <span></span>
+          </div>
+          <div id="cart-items"></div>
+        </div>
+
+        <!-- Summary -->
+        <div class="cart-summary">
+          <h3 class="cart-summary__title">Tóm tắt đơn hàng</h3>
+
+          <!-- Voucher input -->
+          <div class="voucher-wrap">
+            <label class="voucher-label">🎟️ Mã giảm giá</label>
+            <div class="voucher-input-row">
+              <input type="text" id="voucher-input" class="voucher-input" placeholder="Nhập mã voucher..." autocomplete="off">
+              <button class="btn btn--primary voucher-apply-btn" onclick="applyVoucher()">Áp dụng</button>
+            </div>
+            <div id="voucher-msg" class="voucher-msg"></div>
+          </div>
+
+          <div class="summary-row">
+            <span class="summary-row__label">Số lượng</span>
+            <span class="summary-row__val" id="summary-count">0 sản phẩm</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-row__label">Tạm tính</span>
+            <span class="summary-row__val" id="summary-subtotal">0đ</span>
+          </div>
+          <div class="summary-row" id="summary-discount-row" style="display:none;">
+            <span class="summary-row__label" style="color:var(--success)">🎟️ Giảm giá</span>
+            <span class="summary-row__val" id="summary-discount" style="color:var(--success)">-0đ</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-row__label">Phí vận chuyển</span>
+            <span class="summary-row__val" id="summary-shipping" style="color:var(--success)">Miễn phí</span>
+          </div>
+          <div class="summary-row summary-row--total">
+            <span class="summary-row__label">Tổng cộng</span>
+            <span class="summary-row__val" id="summary-total">0đ</span>
+          </div>
+          <button class="btn btn--accent" onclick="checkout()">⚡ Đặt hàng ngay</button>
+          <p class="cart-summary__note">🔒 Thanh toán an toàn & bảo mật</p>
+          <a href="index.html" style="display:block; text-align:center; margin-top:10px; font-size:0.85rem; color:var(--primary);">
+            ← Tiếp tục mua sắm
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB LỊCH SỬ ĐƠN HÀNG ────────────────────────── -->
+    <div id="tab-orders" style="display:none;">
+      <div id="orders-login-required" style="display:none; text-align:center; padding:60px 20px; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);">
+        <div style="font-size:3rem; margin-bottom:12px;">🔒</div>
+        <p style="color:var(--text-muted); margin-bottom:20px;">Vui lòng đăng nhập để xem lịch sử đơn hàng</p>
+        <button class="btn btn--primary" onclick="openAuthModal('login')">Đăng nhập ngay</button>
+      </div>
+      <div id="orders-empty" style="display:none; text-align:center; padding:60px 20px; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);">
+        <div style="font-size:3rem; margin-bottom:12px;">📋</div>
+        <p style="color:var(--text-muted); margin-bottom:20px;">Bạn chưa có đơn hàng nào</p>
+        <a href="index.html" class="btn btn--primary">Mua sắm ngay</a>
+      </div>
+      <div id="orders-list"></div>
+    </div>
+
+    <!-- ── TAB YÊU THÍCH ────────────────────────────────── -->
+    <div id="tab-wishlist" style="display:none;">
+      <div id="wishlist-empty" style="display:none; text-align:center; padding:60px 20px; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);">
+        <div style="font-size:3rem; margin-bottom:12px;">❤️</div>
+        <p style="color:var(--text-muted); margin-bottom:20px;">Bạn chưa có sản phẩm yêu thích nào</p>
+        <a href="index.html" class="btn btn--primary">Khám phá sản phẩm</a>
+      </div>
+      <div id="wishlist-items"></div>
+    </div>
+
+    <!-- Order success -->
+    <div id="order-success">
+      <div class="success__icon">🎉</div>
+      <h2 class="success__title">Đặt hàng thành công!</h2>
+      <p class="success__desc">Cảm ơn bạn đã mua hàng tại Thanhbcwed.<br>Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất.</p>
+      <div class="success__info">
+        <div class="success__info-row">
+          <span>Mã đơn hàng:</span>
+          <strong id="success-order-id">—</strong>
+        </div>
+        <div class="success__info-row">
+          <span>Tổng tiền:</span>
+          <strong id="success-total" style="color:var(--accent)">—</strong>
+        </div>
+        <div class="success__info-row">
+          <span>Trạng thái:</span>
+          <strong style="color:var(--success)">Chờ xác nhận</strong>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a href="index.html" class="btn btn--primary">Tiếp tục mua sắm</a>
+        <button class="btn btn--outline" onclick="switchCartTab('orders')">Xem lịch sử đơn hàng</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── ORDER MODAL ────────────────────────────────────── -->
+  <div id="order-modal">
+    <div class="modal">
+      <div class="modal__header">
+        <h3 class="modal__title">📦 Thông tin đặt hàng</h3>
+        <button class="modal__close" onclick="closeModal()">✕</button>
+      </div>
+      <form onsubmit="submitOrder(event)">
+        <div class="form-group">
+          <label for="order-name">Họ và tên *</label>
+          <input type="text" id="order-name" placeholder="Nguyễn Văn A" required>
+        </div>
+        <div class="form-group">
+          <label for="order-phone">Số điện thoại *</label>
+          <input type="tel" id="order-phone" placeholder="0909 xxx xxx" required>
+        </div>
+        <div class="form-group">
+          <label for="order-address">Địa chỉ giao hàng *</label>
+          <textarea id="order-address" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="order-note">Ghi chú (tùy chọn)</label>
+          <textarea id="order-note" placeholder="Ghi chú thêm cho đơn hàng..."></textarea>
+        </div>
+
+        <!-- Phương thức thanh toán -->
+        <div class="form-group">
+          <label>Phương thức thanh toán *</label>
+          <div class="payment-methods">
+            <label class="payment-option">
+              <input type="radio" name="payment" value="COD" checked onchange="onPaymentChange('COD')">
+              <span class="payment-option__label">💵 COD — Thanh toán khi nhận hàng</span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="BankTransfer" onchange="onPaymentChange('BankTransfer')">
+              <span class="payment-option__label">🏦 Chuyển khoản ngân hàng</span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="MoMo" onchange="onPaymentChange('MoMo')">
+              <span class="payment-option__label">💜 MoMo</span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="ZaloPay" onchange="onPaymentChange('ZaloPay')">
+              <span class="payment-option__label">💙 ZaloPay</span>
+            </label>
+          </div>
+          <input type="hidden" id="payment-method" value="COD">
+        </div>
+
+        <!-- Thông tin chuyển khoản (hiện khi chọn Bank Transfer) -->
+        <div id="bank-info" style="display:none;" class="bank-info">
+          <p class="bank-info__title">📋 Thông tin chuyển khoản:</p>
+          <p>Ngân hàng: <strong>PVcombank</strong></p>
+          <p>Số tài khoản: <strong>28386688868888</strong></p>
+          <p>Chủ tài khoản: <strong>BUI CONG THANH</strong></p>
+          <p>Nội dung: <strong>Thanh toan don hang [Mã đơn]</strong></p>
+        </div>
+
+        <button type="submit" class="btn btn--accent" style="width:100%; padding:13px; font-size:1rem;">
+          ✅ Xác nhận đặt hàng
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ─────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>© 8/5/2026 Thanhbcwed. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── AUTH MODAL ────────────────────────────────────── -->
+  <div id="auth-modal">
+    <div class="auth-modal">
+      <div class="auth-modal__header">
+        <div class="auth-modal__logo">⚡ Thanhbcwed</div>
+        <div class="auth-modal__subtitle">Đăng nhập để đặt hàng</div>
+        <button class="auth-modal__close" onclick="closeAuthModal()">✕</button>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab__btn auth-tab__btn--active" data-tab="login" onclick="switchAuthTab('login')">Đăng nhập</button>
+        <button class="auth-tab__btn" data-tab="register" onclick="switchAuthTab('register')">Tạo tài khoản</button>
+      </div>
+      <div class="auth-panel auth-panel--active" id="panel-login">
+        <form id="login-form">
+          <div class="auth-form-group">
+            <label for="login-email">Email</label>
+            <input class="auth-input" type="email" id="login-email" placeholder="example@email.com" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="login-password">Mật khẩu</label>
+            <div class="input-wrap">
+              <input class="auth-input" type="password" id="login-password" placeholder="Nhập mật khẩu" required>
+              <button type="button" class="toggle-pw" onclick="togglePassword('login-password', this)">👁</button>
+            </div>
+          </div>
+          <span class="auth-error" id="login-error"></span>
+          <button type="submit" class="auth-submit">Đăng nhập</button>
+        </form>
+        <p class="auth-switch">Chưa có tài khoản? <a onclick="switchAuthTab('register')">Đăng ký ngay</a></p>
+      </div>
+      <div class="auth-panel" id="panel-register">
+        <form id="register-form">
+          <div class="auth-form-group">
+            <label for="reg-fullname">Họ và tên</label>
+            <input class="auth-input" type="text" id="reg-fullname" placeholder="Nguyễn Văn A" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="reg-email">Email</label>
+            <input class="auth-input" type="email" id="reg-email" placeholder="example@email.com" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="reg-phone">Số điện thoại</label>
+            <input class="auth-input" type="tel" id="reg-phone" placeholder="0909 xxx xxx" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="reg-password">Mật khẩu</label>
+            <div class="input-wrap">
+              <input class="auth-input" type="password" id="reg-password" placeholder="Ít nhất 6 ký tự" required>
+              <button type="button" class="toggle-pw" onclick="togglePassword('reg-password', this)">👁</button>
+            </div>
+          </div>
+          <div class="auth-form-group">
+            <label for="reg-password2">Xác nhận mật khẩu</label>
+            <div class="input-wrap">
+              <input class="auth-input" type="password" id="reg-password2" placeholder="Nhập lại mật khẩu" required>
+              <button type="button" class="toggle-pw" onclick="togglePassword('reg-password2', this)">👁</button>
+            </div>
+          </div>
+          <span class="auth-error" id="reg-error"></span>
+          <button type="submit" class="auth-submit">Tạo tài khoản</button>
+        </form>
+        <p class="auth-switch">Đã có tài khoản? <a onclick="switchAuthTab('login')">Đăng nhập</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCRIPTS ────────────────────────────────────────── -->
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/compare.js"></script>
+  <script src="js/darkmode.js"></script>
+  <script src="js/cart.js"></script>
+
+</body>
+</html>

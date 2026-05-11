@@ -29,15 +29,18 @@ const BANNER_INTERVAL = 3000; // 3 giây đổi ảnh
 
 function initBannerSlideshow() {
   // Lấy tất cả sản phẩm còn hàng (đã merge override), shuffle ngẫu nhiên
-  const pool = getMergedProductsForHome()
+  const all = getMergedProductsForHome()
     .filter(p => p.inStock)
     .map(p => ({ src: p.thumbnail, name: p.name }));
 
   // Shuffle
-  for (let i = pool.length - 1; i > 0; i--) {
+  for (let i = all.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
+    [all[i], all[j]] = [all[j], all[i]];
   }
+
+  // Chỉ lấy tối đa 6 sản phẩm cho banner
+  const pool = all.slice(0, 6);
 
   if (pool.length === 0) return;
 

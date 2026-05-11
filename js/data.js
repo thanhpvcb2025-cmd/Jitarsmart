@@ -1421,14 +1421,17 @@ function getProductsPaged(category, page, perPage = 8) {
 // ── Merge với override từ admin ───────────────────────────
 
 function getMergedProductsForHome() {
+  const badgeOrder = { "New": 0, "Hot": 1, "Sale": 2 };
   try {
     const overrides = JSON.parse(localStorage.getItem("productOverrides")) || {};
-    return products.map(p => {
-      const ov = overrides[p.id];
-      return ov ? { ...p, ...ov } : p;
-    });
+    return products
+      .map(p => {
+        const ov = overrides[p.id];
+        return ov ? { ...p, ...ov } : p;
+      })
+      .sort((a, b) => (badgeOrder[a.badge] ?? 3) - (badgeOrder[b.badge] ?? 3));
   } catch (e) {
-    return products;
+    return [...products].sort((a, b) => (badgeOrder[a.badge] ?? 3) - (badgeOrder[b.badge] ?? 3));
   }
 }
 

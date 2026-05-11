@@ -168,7 +168,7 @@ const products = [
     originalPrice: 49990000,
     thumbnail: "assets/images/products/imac-m4.jpg",
     images: ["assets/images/products/imac-m4.jpg"],
-    badge: "New",
+    badge: "Hot",
     variants: [
       {
         label: "Màu sắc",
@@ -214,7 +214,7 @@ const products = [
     originalPrice: 31990000,
     thumbnail: "assets/images/products/mac-mini-m4.jpg",
     images: ["assets/images/products/mac-mini-m4.jpg"],
-    badge: "New",
+    badge: "Hot",
     specs: {
       "Chip": "Apple M4 Pro (12-core CPU, 20-core GPU)",
       "RAM": "24GB Unified Memory",
@@ -259,7 +259,7 @@ const products = [
     originalPrice: 4990000,
     thumbnail: "assets/images/products/airpods4.jpg",
     images: ["assets/images/products/airpods4.jpg"],
-    badge: "New",
+    badge: "Hot",
     specs: {
       "Chip": "Apple H2",
       "Chống ồn": "Active Noise Cancellation",
@@ -329,7 +329,7 @@ const products = [
     originalPrice: 25990000,
     thumbnail: "assets/images/products/apple-watch-ultra2.jpg",
     images: ["assets/images/products/apple-watch-ultra2.jpg"],
-    badge: null,
+    badge: "Hot",
     specs: {
       "Màn hình": "49mm Always-On Retina LTPO OLED, 3000 nits",
       "Chip": "Apple S9",
@@ -351,7 +351,7 @@ const products = [
     originalPrice: 29990000,
     thumbnail: "assets/images/products/ipad-pro-m4.jpg",
     images: ["assets/images/products/ipad-pro-m4.jpg"],
-    badge: "New",
+    badge: "Hot",
     specs: {
       "Màn hình": "11 inch Ultra Retina XDR OLED tandem",
       "Chip": "Apple M4",
@@ -374,7 +374,7 @@ const products = [
     originalPrice: 3990000,
     thumbnail: "assets/images/products/apple-pencil-pro.jpg",
     images: ["assets/images/products/apple-pencil-pro.jpg"],
-    badge: "New",
+    badge: "Hot",
     specs: {
       "Tương thích": "iPad Pro M4, iPad Air M2",
       "Tính năng": "Squeeze, Double Tap, Find My, Barrel Roll",
@@ -394,7 +394,7 @@ const products = [
     originalPrice: 1490000,
     thumbnail: "assets/images/products/magsafe-25w.jpg",
     images: ["assets/images/products/magsafe-25w.jpg"],
-    badge: "New",
+    badge: "Hot",
     specs: {
       "Công suất": "25W (với iPhone 16)",
       "Tương thích": "iPhone 12 trở lên, AirPods Pro",
@@ -464,7 +464,7 @@ const products = [
     originalPrice: 40990000,
     thumbnail: "assets/images/products/iphone17promax.jpg",
     images: ["assets/images/products/iphone17promax.jpg"],
-    badge: "Hot",
+    badge: "New",
     variants: [
       {
         label: "Màu sắc",
@@ -795,7 +795,7 @@ const products = [
     originalPrice: 109990000,
     thumbnail: "assets/images/products/macbook-pro-m5-max.jpg",
     images: ["assets/images/products/macbook-pro-m5-max.jpg"],
-    badge: "Hot",
+    badge: "New",
     variants: [
       {
         label: "Màu sắc",
@@ -1122,7 +1122,7 @@ const products = [
     originalPrice: 8990000,
     thumbnail: "assets/images/products/homepod-2nd.jpg",
     images: ["assets/images/products/homepod-2nd.jpg"],
-    badge: null,
+    badge: "Hot",
     variants: [
       {
         label: "Màu sắc",
@@ -1190,7 +1190,7 @@ const products = [
     originalPrice: 4490000,
     thumbnail: "assets/images/products/apple-tv-4k.jpg",
     images: ["assets/images/products/apple-tv-4k.jpg"],
-    badge: null,
+    badge: "Hot",
     variants: [
       {
         label: "Phiên bản",
@@ -1359,7 +1359,7 @@ const products = [
     originalPrice: 269990000,
     thumbnail: "assets/images/products/mac-pro-m4.jpg",
     images: ["assets/images/products/mac-pro-m4.jpg"],
-    badge: "Hot",
+    badge: "New",
     variants: [
       {
         label: "Cấu hình",

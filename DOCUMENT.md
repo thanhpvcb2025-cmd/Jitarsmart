@@ -6,7 +6,7 @@
 
 ## 1. Tổng quan dự án
 
-**Thanhbcwed** là website bán hàng công nghệ trực tuyến, chuyên cung cấp các sản phẩm:
+**Thanhbcwed** là website bán hàng công nghệ trực tuyến, chuyên cung cấp các sản phẩm apple:
 - 📱 Điện thoại thông minh
 - 💻 Laptop
 - 🖥️ PC & iMac
